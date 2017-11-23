@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D as Conv2D
 from keras.layers import MaxPooling2D, SeparableConv2D
-from keras.optimizers import SGD
+from keras.optimizers import SGD, rmsprop
 import numpy as np
 import scipy
 import cv2
@@ -70,7 +70,8 @@ for file in train_file_list:
 #         val = int(file[0:file.index('.')])
 #         test_values.append(val)
 
-train_data = np.array(train_data) / 255.0
+# train_data = np.array(train_data) / 255.0
+train_data = np.array(train_data)
 train_values = np.array(train_values)
 maxim = np.max(train_values)
 minim = np.min(train_values)
@@ -96,18 +97,31 @@ model = Sequential()
 
 # model.add(SeparableConv2D(32, 3, strides=(1,1), padding='same', depth_multiplier=1, activation='relu', input_shape=(n, m)))
 # model.add(SeparableConv2D(32, 3, strides=(1,1), padding='same', activation='relu'))
-model.add(Conv2D(32, kernel_size=(3,3), strides=(1,1), padding='same', activation='relu', input_shape=(n, m, 1)))
+model.add(Conv2D(32, kernel_size=(3,3), strides=(1,1), padding='valid', activation='relu', input_shape=(n, m, 1)))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dense(1, activation='softmax'))
+model.add(Dense(512))
+model.add(Activation('relu'))
+model.add(Dense(1))
 
 # train the model using SGD
 # print("[INFO] compiling model...")
-sgd = SGD(lr=0.1)
-# model.compile(optimizer=sgd, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
-model.compile(optimizer=sgd, loss="mean_squared_error")
+sgd = SGD(lr=0.01)
+opt = rmsprop(lr=0.01, decay=1e-6)
+# model.compile(optimizer=sgd, loss="mean_squared_error")
+model.compile(loss='mean_absolute_error', optimizer=opt)
 
 model.fit(train_data, train_values, epochs=16, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
 
@@ -115,16 +129,4 @@ print '-----------------------------------------------'
 #
 # score = model.evaluate(test_data, test_values, batch_size=1, verbose=1)
 # print score
-
-
-
-
-
-
-
-
-
-
-
-
 
