@@ -7,6 +7,7 @@ import numpy as np
 import scipy
 import cv2
 import os
+from copy import copy
 
 m=300
 n=200
@@ -26,7 +27,7 @@ def image_to_feature_vector(image, size=(m, n)):
     return re_img
 
 
-train_path = '/home/jafar/Documents/ECE 6258/Imgs/Honda_Accord/'
+train_path = '/home/shafe/Documents/College/ECE 6258/Project/Train_Images/Honda Accord/'
 train_data = []
 train_values = []
 train_file_list = os.listdir(train_path)
@@ -48,44 +49,45 @@ for file in train_file_list:
         val = int(file[0:file.index('.')])
         train_values.append(val)
 
-# test_path = '/home/jafar/Documents/ECE 6258/Imgs/Honda_Accord/'
-# test_data = []
-# test_values = []
-# test_file_list = os.listdir(test_path)
-# for file in test_file_list:
-#     if '(' in file:
-#         img = cv2.imread(test_path + file)
-#         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         fet = image_to_feature_vector(img)
-#         test_data.append(fet)
-#
-#         val = int(file[0:file.index('(')-1])
-#         test_values.append(val)
-#     else:
-#         img = cv2.imread(test_path + file)
-#         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         fet = image_to_feature_vector(img)
-#         test_data.append(fet)
-#
-#         val = int(file[0:file.index('.')])
-#         test_values.append(val)
+test_path = '/home/shafe/Documents/College/ECE 6258/Project/Test_Images/Honda Accord/'
+test_data = []
+test_values = []
+test_file_list = os.listdir(test_path)
+for file in test_file_list:
+    if '(' in file:
+        img = cv2.imread(test_path + file)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        fet = image_to_feature_vector(img)
+        test_data.append(fet)
+
+        val = int(file[0:file.index('(')-1])
+        test_values.append(val)
+    else:
+        img = cv2.imread(test_path + file)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        fet = image_to_feature_vector(img)
+        test_data.append(fet)
+
+        val = int(file[0:file.index('.')])
+        test_values.append(val)
 
 # train_data = np.array(train_data) / 255.0
 train_data = np.array(train_data)
 train_values = np.array(train_values)
-maxim = np.max(train_values)
-minim = np.min(train_values)
-train_values = (train_values - minim)/(maxim - minim + 1.0)
+# maxim = np.max(train_values)
+# minim = np.min(train_values)
+# train_values = (train_values - minim)/(maxim - minim + 1.0)
 print train_data.shape
 print train_values.shape
 
-# test_data = np.array(test_data) / 255.0
-# test_values = np.array(test_values)
+test_data = np.array(test_data) / 255.0
+test_values_arr = copy(test_values)
+test_values = np.array(test_values)
 # maxim = np.max(test_values)
 # minim = np.min(test_values)
 # test_values = (test_values - minim)/(maxim - minim + 1.0)
-# print test_data.shape
-# print test_values.shape
+print test_data.shape
+print test_values.shape
 
 # model = Sequential()
 # model.add(Dense(128, activation="relu", kernel_initializer="uniform", input_dim=m*n*3))
@@ -123,10 +125,22 @@ opt = rmsprop(lr=0.01, decay=1e-6)
 # model.compile(optimizer=sgd, loss="mean_squared_error")
 model.compile(loss='mean_absolute_error', optimizer=opt)
 
-model.fit(train_data, train_values, epochs=16, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
+model.fit(train_data, train_values, epochs=2, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
 
 print '-----------------------------------------------'
-#
+
 # score = model.evaluate(test_data, test_values, batch_size=1, verbose=1)
 # print score
 
+estimates = model.predict_on_batch(test_data)
+print estimates
+
+estimated_values = []
+compared_values = []
+x = 0
+for value in estimates:
+    compared_values.append([value*1000, test_values_arr[x]])
+    x+=1
+
+
+print compared_values
