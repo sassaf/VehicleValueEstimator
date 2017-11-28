@@ -116,7 +116,7 @@ model.add(Dense(20))
 
 # train the model using SGD
 # print("[INFO] compiling model...")
-sgd = SGD(lr=0.1)
+sgd = SGD(lr=0.01)
 opt = rmsprop(lr=0.01, decay=1e-6)
 # model.compile(optimizer=sgd, loss="mean_squared_error")
 model.compile(loss='categorical_crossentropy', optimizer=sgd)

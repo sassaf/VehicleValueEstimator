@@ -134,14 +134,14 @@ print '-----------------------------------------------'
 # print score
 
 estimates = model.predict_on_batch(test_data)
-# print estimates
+print estimates
 
 estimated_values = []
 compared_values = []
 for value in estimates:
     estimated_values.append(value)
 
-# print estimated_values
+print estimated_values
 max = np.max(estimated_values)
 min = np.min(estimated_values)
 estimated_values = (estimated_values - min)/(max - min + 1.0)
