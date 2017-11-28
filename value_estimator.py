@@ -21,8 +21,8 @@ def image_to_feature_vector(image, size=(m, n)):
 	# a list of raw pixel intensities
     re_img = cv2.resize(image, (m,n))
     # Blur and then sharpen image to highlight damage
-    re_img = scipy.ndimage.filters.convolve(re_img, gauss_blur, mode='reflect')
-    re_img = scipy.ndimage.filters.convolve(re_img, sharp, mode='reflect') + re_img
+    # re_img = scipy.ndimage.filters.convolve(re_img, gauss_blur, mode='reflect')
+    # re_img = scipy.ndimage.filters.convolve(re_img, sharp, mode='reflect') + re_img
     re_img = np.reshape(re_img, (n, m, 1))
     return re_img
 
@@ -74,13 +74,14 @@ for file in test_file_list:
 # train_data = np.array(train_data) / 255.0
 train_data = np.array(train_data)
 train_values = np.array(train_values)
-# maxim = np.max(train_values)
+maxim = np.max(train_values)
 # minim = np.min(train_values)
 # train_values = (train_values - minim)/(maxim - minim + 1.0)
 print train_data.shape
 print train_values.shape
 
-test_data = np.array(test_data) / 255.0
+# test_data = np.array(test_data) / 255.0
+test_data = np.array(test_data)
 test_values_arr = copy(test_values)
 test_values = np.array(test_values)
 # maxim = np.max(test_values)
@@ -125,7 +126,7 @@ opt = rmsprop(lr=0.01, decay=1e-6)
 # model.compile(optimizer=sgd, loss="mean_squared_error")
 model.compile(loss='mean_absolute_error', optimizer=opt)
 
-model.fit(train_data, train_values, epochs=2, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
+model.fit(train_data, train_values, epochs=8, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
 
 print '-----------------------------------------------'
 
@@ -133,14 +134,25 @@ print '-----------------------------------------------'
 # print score
 
 estimates = model.predict_on_batch(test_data)
-print estimates
+# print estimates
 
 estimated_values = []
 compared_values = []
-x = 0
 for value in estimates:
-    compared_values.append([value*1000, test_values_arr[x]])
+    estimated_values.append(value)
+
+# print estimated_values
+max = np.max(estimated_values)
+min = np.min(estimated_values)
+estimated_values = (estimated_values - min)/(max - min + 1.0)
+estimated_values = (estimated_values*maxim).round()
+
+x = 0
+for value in estimated_values:
+    compared_values.append([value[0], test_values_arr[x]])
     x+=1
 
+# import pdb; pdb.set_trace()
 
+print estimated_values
 print compared_values

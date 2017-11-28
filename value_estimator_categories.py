@@ -22,8 +22,8 @@ def image_to_feature_vector(image, size=(m, n)):
 	# a list of raw pixel intensities
     re_img = cv2.resize(image, (m,n))
     # Blur and then sharpen image to highlight damage
-    re_img = scipy.ndimage.filters.convolve(re_img, gauss_blur, mode='reflect')
-    re_img = scipy.ndimage.filters.convolve(re_img, sharp, mode='reflect') + re_img
+    # re_img = scipy.ndimage.filters.convolve(re_img, gauss_blur, mode='reflect')
+    # re_img = scipy.ndimage.filters.convolve(re_img, sharp, mode='reflect') + re_img
     re_img = np.reshape(re_img, (n, m, 1))
     return re_img
 
@@ -81,7 +81,8 @@ train_values = to_categorical(train_values)
 print train_data.shape
 print train_values.shape
 
-test_data = np.array(test_data) / 255.0
+# test_data = np.array(test_data) / 255.0
+test_data = np.array(test_data)
 test_values_arr = copy(test_values)
 test_values = np.array(test_values)
 test_values = test_values/1000
@@ -115,12 +116,12 @@ model.add(Dense(20))
 
 # train the model using SGD
 # print("[INFO] compiling model...")
-sgd = SGD(lr=0.01)
+sgd = SGD(lr=0.1)
 opt = rmsprop(lr=0.01, decay=1e-6)
 # model.compile(optimizer=sgd, loss="mean_squared_error")
-model.compile(loss='categorical_crossentropy', optimizer=opt)
+model.compile(loss='categorical_crossentropy', optimizer=sgd)
 
-model.fit(train_data, train_values, epochs=6, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
+model.fit(train_data, train_values, epochs=2, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
 
 print '-----------------------------------------------'
 
