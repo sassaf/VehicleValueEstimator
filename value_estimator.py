@@ -8,6 +8,7 @@ import scipy
 import cv2
 import os
 from copy import copy
+from get_dataset import get_image_data
 
 m=300
 n=200
@@ -30,52 +31,18 @@ def image_to_feature_vector(image, size=(m, n)):
 train_path = '/home/shafe/Documents/College/ECE 6258/Project/Train_Images/Honda Accord/'
 train_data = []
 train_values = []
-train_file_list = os.listdir(train_path)
-for file in train_file_list:
-    if '(' in file:
-        img = cv2.imread(train_path + file)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        fet = image_to_feature_vector(img)
-        train_data.append(fet)
-
-        val = int(file[0:file.index('(')-1])
-        train_values.append(val)
-    else:
-        img = cv2.imread(train_path + file)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        fet = image_to_feature_vector(img)
-        train_data.append(fet)
-
-        val = int(file[0:file.index('.')])
-        train_values.append(val)
+get_image_data(train_path, train_data, train_values)
 
 test_path = '/home/shafe/Documents/College/ECE 6258/Project/Test_Images/Honda Accord/'
 test_data = []
 test_values = []
-test_file_list = os.listdir(test_path)
-for file in test_file_list:
-    if '(' in file:
-        img = cv2.imread(test_path + file)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        fet = image_to_feature_vector(img)
-        test_data.append(fet)
-
-        val = int(file[0:file.index('(')-1])
-        test_values.append(val)
-    else:
-        img = cv2.imread(test_path + file)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        fet = image_to_feature_vector(img)
-        test_data.append(fet)
-
-        val = int(file[0:file.index('.')])
-        test_values.append(val)
+get_image_data(test_path, test_data, test_values)
 
 # train_data = np.array(train_data) / 255.0
 train_data = np.array(train_data)
 train_values = np.array(train_values)
 maxim = np.max(train_values)
-# minim = np.min(train_values)
+minim = np.min(train_values)
 # train_values = (train_values - minim)/(maxim - minim + 1.0)
 print train_data.shape
 print train_values.shape
@@ -144,7 +111,7 @@ for value in estimates:
 print estimated_values
 max = np.max(estimated_values)
 min = np.min(estimated_values)
-estimated_values = (estimated_values - min)/(max - min + 1.0)
+estimated_values = minim + (estimated_values - min)/(max - min + 1.0)
 estimated_values = (estimated_values*maxim).round()
 
 x = 0
