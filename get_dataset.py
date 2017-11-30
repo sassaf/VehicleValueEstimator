@@ -38,6 +38,7 @@ def get_image_data(path, data, values):
             hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             masked_img = color_mask(hsv_img)
             masked_img = cv2.cvtColor(masked_img, cv2.COLOR_HSV2BGR)
+            # masked_img = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2BGR)
             bwimg = cv2.cvtColor(masked_img, cv2.COLOR_BGR2GRAY)
             fet = image_to_feature_vector(bwimg)
             data.append(fet)
@@ -49,9 +50,16 @@ def get_image_data(path, data, values):
             hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             masked_img = color_mask(hsv_img)
             masked_img = cv2.cvtColor(masked_img, cv2.COLOR_HSV2BGR)
+            # masked_img = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2BGR)
             bwimg = cv2.cvtColor(masked_img, cv2.COLOR_BGR2GRAY)
             fet = image_to_feature_vector(bwimg)
             data.append(fet)
 
             val = int(file[0:file.index('.')])
             values.append(val)
+
+
+# train_path = '/home/shafe/Documents/College/ECE 6258/Project/Train_Images/Honda Accord/'
+# train_data = []
+# train_values = []
+# get_image_data(train_path, train_data, train_values)
