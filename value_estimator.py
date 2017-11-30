@@ -24,7 +24,8 @@ def train_evaluate_model(model, train_data, train_values, valid_data, valid_valu
     model.fit(train_data, train_values, epochs=eps, batch_size=32, verbose=1, callbacks=None, validation_split=0.0, initial_epoch=0)
 
     score = model.evaluate(valid_data, valid_values, batch_size=1, verbose=1)
-    print score
+    scores.append(score)
+    print scores
 
 def create_model():
     model = Sequential()
@@ -92,19 +93,17 @@ if __name__ == "__main__":
     print test_values.shape
 
 
-    # n_folds = 5
-    # skf = StratifiedKFold(train_values, n_folds=n_folds, shuffle=True)
-    #
-    # for i, (train,test) in enumerate(skf):
-    #     print "Running Fold", i + 1, "/", n_folds
-    #     model = None  # Clearing the NN.
-    #     model = create_model()
-    #
-    #     train_evaluate_model(model, train_data[train], train_values[train], train_data[test], train_values[test], eps=16)
+    #kfolds portion
+    n_folds = 5
+    skf = StratifiedKFold(train_values, n_folds=n_folds, shuffle=True)
+    scores = []
 
-    model = create_model()
+    for i, (train,test) in enumerate(skf):
+        print "Running Fold", i + 1, "/", n_folds
+        model = None  # Clearing the NN.
+        model = create_model()
 
-    train_evaluate_model(model, train_data, train_values, test_data, test_values, eps=8)
+        train_evaluate_model(model, train_data[train], train_values[train], train_data[test], train_values[test], eps=8)
 
 
     # testing stage
