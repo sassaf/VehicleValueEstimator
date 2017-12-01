@@ -88,7 +88,7 @@ if __name__ == "__main__":
     scores = []
     eps = 1
 
-    # uncomment this section, lines 91-99, to use kfolds functionality
+    # uncomment lines 93-101 and comment lines 105-106 to use kfolds functionality
     # nfolds determines how many segments will be used
     # n_folds = 5
     # skf = StratifiedKFold(train_values, n_folds=n_folds, shuffle=True)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     #     train_evaluate_model(model, train_data[train], train_values[train], train_data[test], train_values[test], eps)
 
     # without kfolds, single model and test
-    # comment lines 103-104 and uncomment lines 91-99 in order to test k-fold functionality.
+    # comment lines 105-106 and uncomment lines 93-101 in order to test k-fold functionality.
     model = create_model()
     train_evaluate_model(model, train_data, train_values, test_data, test_values, eps)
 
