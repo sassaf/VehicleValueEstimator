@@ -45,6 +45,11 @@ def get_image_data(path, data, values):
 
             val = int(file[0:file.index('(')-1])
             values.append(val)
+
+            # cv2.imshow("masked_img", masked_img)
+            # cv2.imshow(str(val), img)
+            # cv2.waitKey()
+            # cv2.destroyAllWindows()
         else:
             img = cv2.imread(path + file)
             hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -58,8 +63,13 @@ def get_image_data(path, data, values):
             val = int(file[0:file.index('.')])
             values.append(val)
 
+            # cv2.imshow("masked_img", masked_img)
+            # cv2.imshow(str(val), img)
+            # cv2.waitKey()
+            # cv2.destroyAllWindows()
 
-# train_path = '/home/shafe/Documents/College/ECE 6258/Project/Train_Images/Honda Accord/'
-# train_data = []
-# train_values = []
-# get_image_data(train_path, train_data, train_values)
+
+train_path = '/home/shafe/Documents/College/ECE 6258/Project/Test_Images/Honda Accord/'
+train_data = []
+train_values = []
+get_image_data(train_path, train_data, train_values)

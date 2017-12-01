@@ -105,6 +105,10 @@ if __name__ == "__main__":
 
         train_evaluate_model(model, train_data[train], train_values[train], train_data[test], train_values[test], eps=8)
 
+    #without kfolds
+    model = create_model()
+    train_evaluate_model(model, train_data, train_values, test_data, test_values, eps=8)
+
 
     # testing stage
     print '-----------------------------------------------'
